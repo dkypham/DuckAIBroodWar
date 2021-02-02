@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "economy/WorkerManager.h"
+#include "structure/BuildOrderList.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 

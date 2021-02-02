@@ -4,15 +4,26 @@
 using namespace BWAPI;
 using namespace Filter;
 
+std::queue<BuildOrderElement> buildOrderListPtr;
+
 void DuckAIModule::onStart() {
-  Broodwar->setLocalSpeed(15);
+  Broodwar->setLocalSpeed( 15 );
 
   WorkerManager::Initialize();
 
+  BuildOrderList::initializeBuildOrder( buildOrderListPtr,
+    Broodwar->enemy()->getRace() );
+  
+  // FOR TESTING: Print out build order
+  //while (!buildOrderListPtr.empty()) {
+  //  Broodwar << buildOrderListPtr.front().BOuT << " at supply: " <<
+  //    buildOrderListPtr.front().BOsupply << std::endl;
+  //  buildOrderListPtr.pop();
+  //}
 }
 
 void DuckAIModule::onFrame() {
-  Broodwar->drawTextScreen(200, 0, "FPS: %d", Broodwar->getFPS());
+  Broodwar->drawTextScreen(390, 3, "FPS: %d", Broodwar->getFPS());
 
   WorkerManager::WorkerManager();
 }
