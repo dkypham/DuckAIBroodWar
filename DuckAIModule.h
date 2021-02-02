@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "economy/WorkerManager.h"
 #include "structure/BuildOrderList.h"
+#include "map/Map.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 
