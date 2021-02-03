@@ -3,6 +3,10 @@
 #include "economy/WorkerManager.h"
 #include "structure/BuildOrderList.h"
 #include "map/Map.h"
+#include "map/MapDraw.h"
+#include "map/UIDraw.h"
+#include "unit/UnitIDMap.h"
+#include "economy/Resources.h"
 
 // Remember not to use "Broodwar" in any global class constructor!
 

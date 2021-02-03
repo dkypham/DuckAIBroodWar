@@ -20,7 +20,6 @@ namespace Map {
       if (u->getType() == BWAPI::UnitTypes::Terran_Command_Center) {
         startingCC_X = u->getTilePosition().x;
         startingCC_Y = u->getTilePosition().y;
-        //BWAPI::Broodwar << startingCC_X << " , " << startingCC_Y << std::endl;
       }
     }
 
@@ -30,7 +29,6 @@ namespace Map {
         if (u->getTilePosition().x > startingCC_X) allLeft = false;
         if (u->getTilePosition().y < startingCC_Y) allAbove = false;
         if (u->getTilePosition().y > startingCC_Y) allBelow = false;
-        //BWAPI::Broodwar << u->getTilePosition().x << " , " << u->getTilePosition().y << std::endl;
       }
     }
 
@@ -72,4 +70,5 @@ namespace Map {
 
     noBuildZones.push_back( std::make_tuple( topLeft, botRight ) );
   }
+
 }

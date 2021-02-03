@@ -4,6 +4,12 @@
 using namespace BWAPI;
 using namespace Filter;
 
+
+std::multimap<BWAPI::UnitType, int> dArmyMap;
+std::multimap<BWAPI::UnitType, int> dStructMap;
+
+std::vector<int> dResources(7);
+
 std::queue<BuildOrderElement> buildOrderListPtr;
 std::list<int> mapVariables;
 std::vector<std::tuple<BWAPI::TilePosition, BWAPI::TilePosition>> noBuildZones;
@@ -11,50 +17,42 @@ std::vector<std::tuple<BWAPI::TilePosition, BWAPI::TilePosition>> noBuildZones;
 void DuckAIModule::onStart() {
   Broodwar->setLocalSpeed( 15 );
 
+  // TODO: Implement beginning worker logic (find optimal mineral spread)
   WorkerManager::Initialize();
 
+  // Initialize initial build order
   BuildOrderList::initializeBuildOrder( buildOrderListPtr,
     Broodwar->enemy()->getRace() );
 
-  Map::initializeMapInfo( mapVariables , noBuildZones );
+  // Determine mineral setup (above, right, below, left)
+  Map::initializeMapInfo( mapVariables, noBuildZones );
 
-  // FOR TESTING: Print out build order
-  //while (!buildOrderListPtr.empty()) {
-  //  Broodwar << buildOrderListPtr.front().BOuT << " at supply: " <<
-  //    buildOrderListPtr.front().BOsupply << std::endl;
-  //  buildOrderListPtr.pop();
-  //}
+  // Populate dArmyMap and dStructMap
+  UnitIDMap::initializeUnitIDMaps( dArmyMap, dStructMap );
+
+  Resources::initializeResources( dResources );
+
+
 }
 
 void DuckAIModule::onFrame() {
   Broodwar->drawTextScreen( 390, 3, "FPS: %d", Broodwar->getFPS() );
 
   WorkerManager::WorkerManager();
+  MapDraw::drawMapInfo( noBuildZones );
+  UIDraw::drawUIInfo( dArmyMap, dStructMap , dResources );
 
-  BWAPI::TilePosition topLeftTP = std::get<0>( noBuildZones.front() );
-  BWAPI::TilePosition botRightTP = std::get<1>( noBuildZones.front() );
-  
-  BWAPI::Position topLeftPos = BWAPI::Position( topLeftTP.x *32, topLeftTP.y *32);
-  BWAPI::Position botRightPos = BWAPI::Position( botRightTP.x *32, botRightTP.y *32);
-
-  Broodwar->drawBoxMap( topLeftPos, botRightPos, BWAPI::Colors::Red );
-
-  /*Broodwar << topLeftPos.x << " , " << topLeftPos.y << std::endl;
-  Broodwar << botRightPos.x << " , " << botRightPos.y << std::endl;*/
-
-  //for (auto &u : BWAPI::Broodwar->self()->getUnits()) {
-  //  // Command Center: train workers if not already training, have enough
-  //  // minerals.
-  //  if (u->getType() == BWAPI::UnitTypes::Terran_Command_Center) {
-  //    Broodwar << u->getPosition().x << " , " << u->getPosition().y << std::endl;
-  //  }
-  //}
-
-
+  Resources::updateEffectiveResources( dResources, dArmyMap );
 }
 
 void DuckAIModule::onUnitCreate( BWAPI::Unit unit ) {
-
+  switch (UnitIDMap::unitFlagSwitch( unit )) {
+  case 1: // structure
+    UnitIDMap::addToUnitIDMap( dStructMap, unit );
+    break;
+  case 2: // unit
+    UnitIDMap::addToUnitIDMap( dArmyMap, unit );
+  }
 }
 
 void DuckAIModule::onUnitDestroy( BWAPI::Unit unit ) {
@@ -63,7 +61,6 @@ void DuckAIModule::onUnitDestroy( BWAPI::Unit unit ) {
 void DuckAIModule::onUnitMorph( BWAPI::Unit unit ) {
 
 }
-
 
 void DuckAIModule::onUnitComplete( BWAPI::Unit unit ) {
 
