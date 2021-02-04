@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include "../structure/BuildOrderElement.h"
 
 namespace UnitIDMap {
   void initializeUnitIDMaps( std::multimap<BWAPI::UnitType, int>& dArmyMap,
@@ -10,4 +11,6 @@ namespace UnitIDMap {
 
   void addToUnitIDMap( std::multimap<BWAPI::UnitType, int>& IDMap,
     BWAPI::Unit dUnit );
+  void updateBuildOrderList( std::queue<BuildOrderElement>& buildOrderListPtr ,
+    BWAPI::UnitType uT );
 };

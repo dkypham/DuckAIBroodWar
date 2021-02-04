@@ -2,8 +2,9 @@
 #include "../Common.h"
 
 namespace Resources{
-  void initializeResources( std::vector<int> dResources );
-  void updateResources( std::vector<int> dResources );
+  void initializeResources( std::vector<int>& dResources );
+  void updateResources( std::vector<int>& dResources , 
+    std::multimap<BWAPI::UnitType, int>& dArmyMap );
   bool isEnoughMinerals( std::vector<int> dResources, int mineralsCost );
   bool isEnoughGas( std::vector<int> dResources, int gasCost );
   bool isEnoughMineralsGas( std::vector<int> dResources, int mineralsCost,

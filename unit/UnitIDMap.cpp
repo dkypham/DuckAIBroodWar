@@ -32,4 +32,11 @@ namespace UnitIDMap {
     BWAPI::Unit dUnit ) {
     IDMap.insert( makeUnitIDMapPair( dUnit->getType(), dUnit->getID() ) );
   }
+
+  void updateBuildOrderList( std::queue<BuildOrderElement>& buildOrderListPtr,
+    BWAPI::UnitType uT ) {
+    if (buildOrderListPtr.front().BOuT == uT) {
+      buildOrderListPtr.pop();
+    }
+  }
 }

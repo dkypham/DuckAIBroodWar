@@ -2,7 +2,7 @@
 
 namespace Map {
   void initializeMapInfo( std::list<int>& mapVariables ,
-    std::vector<std::tuple<BWAPI::TilePosition, 
+    std::vector<std::pair<BWAPI::TilePosition, 
     BWAPI::TilePosition>>& noBuildZones ) {
     mapVariables.push_back( findMineralSetup() );
     initializeNoBuildZone( noBuildZones );
@@ -41,7 +41,7 @@ namespace Map {
     return -1;
   }
 
-  void initializeNoBuildZone( std::vector<std::tuple<BWAPI::TilePosition, 
+  void initializeNoBuildZone( std::vector<std::pair<BWAPI::TilePosition, 
     BWAPI::TilePosition>>& noBuildZones ) {
     // Designate box around mineral line, gas, and CC as a no build zone
     BWAPI::TilePosition topLeft = BWAPI::TilePosition(-1,1);
@@ -68,7 +68,7 @@ namespace Map {
       }
     }
 
-    noBuildZones.push_back( std::make_tuple( topLeft, botRight ) );
+    noBuildZones.push_back( std::make_pair( topLeft, botRight ) );
   }
 
 }

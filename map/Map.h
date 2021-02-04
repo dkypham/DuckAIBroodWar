@@ -5,9 +5,9 @@
 
 namespace Map {
   void initializeMapInfo( std::list<int>& mapVariables,
-    std::vector<std::tuple<BWAPI::TilePosition,
+    std::vector<std::pair<BWAPI::TilePosition,
     BWAPI::TilePosition>>&noBuildZones );
   int findMineralSetup();
-  void initializeNoBuildZone( std::vector<std::tuple<BWAPI::TilePosition, 
+  void initializeNoBuildZone( std::vector<std::pair<BWAPI::TilePosition, 
     BWAPI::TilePosition>>& noBuildZones );
 }

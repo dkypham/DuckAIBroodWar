@@ -4,8 +4,8 @@
 #include "BuildOrderElement.h"
 
 namespace BuildOrderList {
-  std::multimap<int, BuildOrderElement> chooseBuildOrder( 
-    BWAPI::Race enemyRace ); 
+  //std::multimap<int, BuildOrderElement> chooseBuildOrder( 
+  //  BWAPI::Race enemyRace ); 
 
   void initializeBuildOrder( std::queue<BuildOrderElement>& buildOrderList,
     BWAPI::Race enemyRace );

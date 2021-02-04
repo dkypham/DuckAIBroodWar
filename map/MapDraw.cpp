@@ -3,10 +3,10 @@
 namespace MapDraw {
 
   // 0x01 = draw no build zones
-  void drawMapInfo( std::vector<std::tuple<BWAPI::TilePosition, 
+  void drawMapInfo( std::vector<std::pair<BWAPI::TilePosition, 
     BWAPI::TilePosition>>& noBuildZones ) {
-    BWAPI::TilePosition topLeftTP = std::get<0>( noBuildZones.front() );
-    BWAPI::TilePosition botRightTP = std::get<1>( noBuildZones.front() );
+    BWAPI::TilePosition topLeftTP = noBuildZones.front().first;
+    BWAPI::TilePosition botRightTP = noBuildZones.front().second;
 
     BWAPI::Position topLeftPos = TileComparator::TPtoPos( topLeftTP );
     BWAPI::Position botRightPos = TileComparator::TPtoPos( botRightTP );

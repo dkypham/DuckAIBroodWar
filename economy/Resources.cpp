@@ -6,27 +6,28 @@ namespace Resources {
 // dResources[2] = Actual gas amount
 // dResources[3] = Effective gas amount
 // dResources[4] = Actual available supply amount
-// dResources[5] = Effective available supplya mount
+// dResources[5] = Effective available supply amount
 // dResources[6] = Actual supply used
 
-  void initializeResources( std::vector<int> dResources ) {
+  void initializeResources( std::vector<int>& dResources ) {
     dResources[0] = BWAPI::Broodwar->self()->minerals();
     dResources[1] = BWAPI::Broodwar->self()->minerals();
     dResources[2] = BWAPI::Broodwar->self()->gas();
     dResources[3] = BWAPI::Broodwar->self()->gas();
-    dResources[4] = BWAPI::Broodwar->self()->supplyTotal();
-    dResources[5] = BWAPI::Broodwar->self()->supplyTotal();
-    dResources[6] = BWAPI::Broodwar->self()->supplyUsed();
+    dResources[4] = BWAPI::Broodwar->self()->supplyTotal()/2;
+    dResources[5] = BWAPI::Broodwar->self()->supplyTotal()/2;
+    dResources[6] = BWAPI::Broodwar->self()->supplyUsed()/2;
   }
 
-  void updateResources( std::vector<int> dResources ) {
+  void updateResources( std::vector<int>& dResources , 
+    std::multimap<BWAPI::UnitType, int>& dArmyMap ) {
     dResources[0] = BWAPI::Broodwar->self()->minerals();
     dResources[1] = BWAPI::Broodwar->self()->minerals();
     dResources[2] = BWAPI::Broodwar->self()->gas();
     dResources[3] = BWAPI::Broodwar->self()->gas();
-    dResources[4] = BWAPI::Broodwar->self()->supplyTotal();
-    dResources[5] = BWAPI::Broodwar->self()->supplyTotal();
-    dResources[6] = BWAPI::Broodwar->self()->supplyUsed();
+    dResources[4] = BWAPI::Broodwar->self()->supplyTotal()/2;
+    dResources[5] = BWAPI::Broodwar->self()->supplyTotal()/2;
+    dResources[6] = BWAPI::Broodwar->self()->supplyUsed()/2;
   }
 
   bool isEnoughMinerals( std::vector<int> dResources, int mineralsCost ) {
@@ -63,7 +64,7 @@ namespace Resources {
     std::multimap<BWAPI::UnitType, int>& dArmyMap) {
     for (auto itr = dArmyMap.find( BWAPI::UnitTypes::Terran_SCV ); 
       itr != dArmyMap.end(); itr++ ) {
-      BWAPI::Broodwar << "SCV ID: " << itr->second << std::endl;
+      //BWAPI::Broodwar << "SCV ID: " << itr->second << std::endl;
 
     }
   }
