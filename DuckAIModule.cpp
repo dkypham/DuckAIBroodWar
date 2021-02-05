@@ -4,76 +4,89 @@
 using namespace BWAPI;
 using namespace Filter;
 
-
+/* Current Data Structures
+ * dArmyMap: multimap with unittype (non structs) keys and int ID values
+ * dStructMap: multimap with unittype (structs) keys and int ID values
+ * dResources: vector of defined resources
+ *   dResources[0] = Actual mineral amount
+ *   dResources[1] = Effective mineral amount
+ *   dResources[2] = Actual gas amount
+ *   dResources[3] = Effective gas amount
+ *   dResources[4] = Actual available supply amount
+ *   dResources[5] = Effective available supply amount
+ *   dResources[6] = Actual supply used
+ * buildOrderList: queue with build order using BuildOrderElements
+ * noBuildZones: every pair is the topright and botright of a no build zone
+*/
 std::multimap<BWAPI::UnitType, int> dArmyMap;
 std::multimap<BWAPI::UnitType, int> dStructMap;
-
-std::vector<int> dResources( 7 );
-
-std::queue<BuildOrderElement> buildOrderListPtr;
-std::list<int> mapVariables;
+std::vector<int> dResources(Resources::kResourcesSize);
+std::queue<BuildOrderElement> buildOrderList;
 std::vector<std::pair<BWAPI::TilePosition, BWAPI::TilePosition>> noBuildZones;
 
-void DuckAIModule::onStart() {
-  Broodwar->setLocalSpeed( 10 );
+// TODO: organize variables below this
+std::list<int> mapVariables;
 
-  // TODO: Implement beginning worker logic (find optimal mineral spread)
+void DuckAIModule::onStart() {
+  // Set game speed
+  Broodwar->setLocalSpeed(10);
+
+  // TODO: implement intial worker logic (finding closest resources, 
+  // assigning roles
   WorkerManager::Initialize();
 
-  // Initialize initial build order
-  BuildOrderList::initializeBuildOrder( buildOrderListPtr,
-    Broodwar->enemy()->getRace() );
+  // BuildOrderList initialize: determine build order
+  BuildOrderList::initializeBuildOrder(buildOrderList,
+                                       Broodwar->enemy()->getRace());
 
-  // Determine mineral setup (above, right, below, left)
-  Map::initializeMapInfo( mapVariables, noBuildZones );
+  // Map initialize: find initial no build zone based on mineral line, gas
+  // and starting CC
+  Map::initializeMapInfo(mapVariables, noBuildZones);
 
-  // Populate dArmyMap and dStructMap
-  UnitIDMap::initializeUnitIDMaps( dArmyMap, dStructMap );
+  // UnitIDMap initialize: fill dArmyMap and dStructMap with the starting units
+  UnitIDMap::initializeUnitIDMaps(dArmyMap, dStructMap);
 
-  Resources::initializeResources( dResources );
-
-
+  // Resources initialize: fill dResources with initial resource values
+  Resources::initializeResources(dResources);
 }
 
 void DuckAIModule::onFrame() {
-  Broodwar->drawTextScreen( 390, 3, "FPS: %d", Broodwar->getFPS() );
+  Resources::updateResources(dResources, dArmyMap);
+  WorkerManager::WorkerManager(dResources, dArmyMap, buildOrderList);
 
-  Resources::updateResources( dResources, dArmyMap );
-  WorkerManager::WorkerManager( dResources, dArmyMap, buildOrderListPtr );
-
-  MapDraw::drawMapInfo( noBuildZones );
-  UIDraw::drawUIInfo( dArmyMap, dStructMap, dResources, buildOrderListPtr );
+  MapDraw::drawMapInfo(noBuildZones);
+  UIDraw::drawUIInfo(dArmyMap, dStructMap, dResources, buildOrderList);
 
 }
 
-void DuckAIModule::onUnitCreate( BWAPI::Unit unit ) {
-  switch (UnitIDMap::unitFlagSwitch( unit )) {
+void DuckAIModule::onUnitCreate(BWAPI::Unit unit) {
+  switch (UnitIDMap::unitFlagSwitch(unit)) {
   case 1: // structure
-    UnitIDMap::addToUnitIDMap( dStructMap, unit );
-    UnitIDMap::updateBuildOrderList( buildOrderListPtr, unit->getType() );
+    UnitIDMap::addToUnitIDMap(dStructMap, unit);
+    UnitIDMap::updateBuildOrderList(buildOrderList, unit->getType());
     break;
   case 2: // unit
-    UnitIDMap::addToUnitIDMap( dArmyMap, unit );
+    UnitIDMap::addToUnitIDMap(dArmyMap, unit);
     break;
   }
 }
 
-void DuckAIModule::onUnitDestroy( BWAPI::Unit unit ) {
+void DuckAIModule::onUnitDestroy(BWAPI::Unit unit) {
 }
 
-void DuckAIModule::onUnitMorph( BWAPI::Unit unit ) {
-  switch (UnitIDMap::unitFlagSwitch( unit )) {
+void DuckAIModule::onUnitMorph(BWAPI::Unit unit) {
+  switch (UnitIDMap::unitFlagSwitch(unit)) {
   case 1: // structure
-    UnitIDMap::updateBuildOrderList( buildOrderListPtr, unit->getType() );
+    UnitIDMap::updateBuildOrderList(buildOrderList, unit->getType());
     break;
   }
 }
 
-void DuckAIModule::onUnitComplete( BWAPI::Unit unit ) {
-  switch (UnitIDMap::unitFlagSwitch( unit )) {
+void DuckAIModule::onUnitComplete(BWAPI::Unit unit) {
+  switch (UnitIDMap::unitFlagSwitch(unit)) {
   case 1: // structure
     if (unit->getType() == BWAPI::UnitTypes::Terran_Refinery) {
-      auto itr1 = dArmyMap.lower_bound( BWAPI::UnitTypes::Terran_SCV );
+      auto itr1 = dArmyMap.lower_bound(BWAPI::UnitTypes::Terran_SCV);
       itr1++;
       auto itr2 = itr1;
       itr2++;
@@ -81,7 +94,7 @@ void DuckAIModule::onUnitComplete( BWAPI::Unit unit ) {
       itr2++;
       while (itr1 != itr2) {
         if (itr1->first == BWAPI::UnitTypes::Terran_SCV) {
-          Broodwar->getUnit( itr1->second )->gather( unit );
+          Broodwar->getUnit(itr1->second)->gather(unit);
         }
         itr1++;
       }

@@ -2,6 +2,8 @@
 #include "../Common.h"
 
 namespace Resources{
+  const int kResourcesSize = 7;
+
   void initializeResources( std::vector<int>& dResources );
   void updateResources( std::vector<int>& dResources , 
     std::multimap<BWAPI::UnitType, int>& dArmyMap );
