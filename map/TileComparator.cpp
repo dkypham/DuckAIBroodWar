@@ -33,11 +33,13 @@ namespace TileComparator {
 
   bool isIntersectingTP( std::pair<BWAPI::TilePosition,
     BWAPI::TilePosition> firstZone, std::pair<BWAPI::TilePosition,
-    BWAPI::TilePosition> secondZone ) {
-    BWAPI::TilePosition firstZoneTopLeft = firstZone.first;
-    BWAPI::TilePosition firstZoneBotRight = firstZone.second;    
-    BWAPI::TilePosition secondZoneTopLeft = secondZone.first;
-    BWAPI::TilePosition secondZoneBotRight = secondZone.second;
+    BWAPI::TilePosition> secondZone ) {    
+    if (firstZone.first.x >= secondZone.second.x ||
+        secondZone.first.x >= firstZone.second.x) return false;
+
+    if (firstZone.first.y <= secondZone.second.y ||
+        secondZone.first.y <= firstZone.second.y) return false;
     
+    return true;
   }
 }

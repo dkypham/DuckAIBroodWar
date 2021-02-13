@@ -4,10 +4,19 @@
 #include "TileComparator.h"
 
 namespace Map {
-  void initializeMapInfo( std::list<int>& mapVariables,
-    std::vector<std::pair<BWAPI::TilePosition,
-    BWAPI::TilePosition>>&noBuildZones );
+  void initializeMapInfo(std::multimap<BWAPI::UnitType, int> dStructMap,
+                         std::list<int>& mapVariables,
+                         std::vector<std::pair<BWAPI::TilePosition,
+                         BWAPI::TilePosition>>&noBuildZones,
+                         std::vector<std::pair<BWAPI::TilePosition,
+                         BWAPI::TilePosition>>&buildZones);
   int findMineralSetup();
-  void initializeNoBuildZone( std::vector<std::pair<BWAPI::TilePosition, 
-    BWAPI::TilePosition>>& noBuildZones );
+  void initializeNoBuildZones(std::vector<std::pair<BWAPI::TilePosition,
+                             BWAPI::TilePosition>>&noBuildZones);
+  void initializeBuildZones(std::multimap<BWAPI::UnitType, int> dStructMap, 
+                            std::list<int>& mapVariables,
+                            std::vector<std::pair<BWAPI::TilePosition,
+                            BWAPI::TilePosition>>&noBuildZones,
+                            std::vector<std::pair<BWAPI::TilePosition,
+                            BWAPI::TilePosition>>&buildZones);
 }

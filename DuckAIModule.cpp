@@ -8,13 +8,13 @@ using namespace Filter;
  * dArmyMap: multimap with unittype (non structs) keys and int ID values
  * dStructMap: multimap with unittype (structs) keys and int ID values
  * dResources: vector of defined resources
- *   dResources[0] = Actual mineral amount
- *   dResources[1] = Effective mineral amount
- *   dResources[2] = Actual gas amount
- *   dResources[3] = Effective gas amount
- *   dResources[4] = Actual available supply amount
- *   dResources[5] = Effective available supply amount
- *   dResources[6] = Actual supply used
+ *   dResources[kActMinIndex] = Actual mineral amount
+ *   dResources[kEffMinIndex] = Effective mineral amount
+ *   dResources[kActGasnIndex] = Actual gas amount
+ *   dResources[kEffGasIndex] = Effective gas amount
+ *   dResources[kActSupIndex] = Actual available supply amount
+ *   dResources[kEffSupIndex] = Effective available supply amount
+ *   dResources[kSupUseIndex] = Actual supply used
  * buildOrderList: queue with build order using BuildOrderElements
  * noBuildZones: every pair is the topright and botright of a no build zone
 */
@@ -23,6 +23,7 @@ std::multimap<BWAPI::UnitType, int> dStructMap;
 std::vector<int> dResources(Resources::kResourcesSize);
 std::queue<BuildOrderElement> buildOrderList;
 std::vector<std::pair<BWAPI::TilePosition, BWAPI::TilePosition>> noBuildZones;
+std::vector<std::pair<BWAPI::TilePosition, BWAPI::TilePosition>> buildZones;
 
 // TODO: organize variables below this
 std::list<int> mapVariables;
@@ -41,7 +42,7 @@ void DuckAIModule::onStart() {
 
   // Map initialize: find initial no build zone based on mineral line, gas
   // and starting CC
-  Map::initializeMapInfo(mapVariables, noBuildZones);
+  Map::initializeMapInfo(dStructMap, mapVariables, noBuildZones, buildZones);
 
   // UnitIDMap initialize: fill dArmyMap and dStructMap with the starting units
   UnitIDMap::initializeUnitIDMaps(dArmyMap, dStructMap);

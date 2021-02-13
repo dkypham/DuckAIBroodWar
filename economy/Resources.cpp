@@ -1,13 +1,13 @@
 #include "Resources.h"
 
 namespace Resources {
-  // dResources[0] = Actual mineral amount
-  // dResources[1] = Effective mineral amount
-  // dResources[2] = Actual gas amount
-  // dResources[3] = Effective gas amount
-  // dResources[4] = Actual available supply amount
-  // dResources[5] = Effective available supply amount
-  // dResources[6] = Actual supply used
+  // dResources[kActMinIndex] = Actual mineral amount
+  // dResources[kEffMinIndex] = Effective mineral amount
+  // dResources[kActGasnIndex] = Actual gas amount
+  // dResources[kEffGasIndex] = Effective gas amount
+  // dResources[kActSupIndex] = Actual available supply amount
+  // dResources[kEffSupIndex] = Effective available supply amount
+  // dResources[kSupUseIndex] = Actual supply used
 
   void initializeResources(std::vector<int>& dResources) {
     dResources[kActMinIndex] = BWAPI::Broodwar->self()->minerals();

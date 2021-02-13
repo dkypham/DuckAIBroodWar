@@ -39,4 +39,9 @@ namespace UnitIDMap {
       buildOrderListPtr.pop();
     }
   }
+
+  std::array<int> getAllIDs(std::multimap<BWAPI::UnitType, int>& IDMap,
+                            BWAPI::UnitType uT) {
+
+  }
 }

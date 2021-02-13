@@ -1,11 +1,15 @@
 #include "Map.h"
 
 namespace Map {
-  void initializeMapInfo( std::list<int>& mapVariables ,
-    std::vector<std::pair<BWAPI::TilePosition, 
-    BWAPI::TilePosition>>& noBuildZones ) {
-    mapVariables.push_back( findMineralSetup() );
-    initializeNoBuildZone( noBuildZones );
+  void initializeMapInfo(std::multimap<BWAPI::UnitType, int> dStructMap,
+                         std::list<int>& mapVariables,
+                         std::vector<std::pair<BWAPI::TilePosition,
+                         BWAPI::TilePosition>>& noBuildZones,
+                         std::vector<std::pair<BWAPI::TilePosition,
+                         BWAPI::TilePosition>>&buildZones) {
+    mapVariables.push_back(findMineralSetup());
+    initializeNoBuildZones(noBuildZones);
+    initializeBuildZones(mapVariables, noBuildZones, buildZones);
   }
 
   int findMineralSetup() {
@@ -23,7 +27,7 @@ namespace Map {
       }
     }
 
-    for (auto &u : BWAPI::Broodwar->getNeutralUnits() ) {
+    for (auto &u : BWAPI::Broodwar->getNeutralUnits()) {
       if (u->getType().isMineralField() && u->isVisible()) {
         if (u->getTilePosition().x < startingCC_X) allRight = false;
         if (u->getTilePosition().x > startingCC_X) allLeft = false;
@@ -41,34 +45,46 @@ namespace Map {
     return -1;
   }
 
-  void initializeNoBuildZone( std::vector<std::pair<BWAPI::TilePosition, 
-    BWAPI::TilePosition>>& noBuildZones ) {
+  void initializeNoBuildZones(std::vector<std::pair<BWAPI::TilePosition,
+                             BWAPI::TilePosition>>&noBuildZones) {
     // Designate box around mineral line, gas, and CC as a no build zone
-    BWAPI::TilePosition topLeft = BWAPI::TilePosition(-1,1);
-    BWAPI::TilePosition botRight = BWAPI::TilePosition( -1, -1 );
+    BWAPI::TilePosition topLeft = BWAPI::TilePosition(-1, 1);
+    BWAPI::TilePosition botRight = BWAPI::TilePosition(-1, -1);
 
     // set topLeft and botRight to CC
     for (auto &u : BWAPI::Broodwar->self()->getUnits()) {
       if (u->getType() == BWAPI::UnitTypes::Terran_Command_Center) {
         topLeft = u->getTilePosition();
-        botRight = BWAPI::TilePosition( u->getTilePosition().x +
-          u->getType().tileWidth(), u->getTilePosition().y + 
-          u->getType().tileHeight() );
+        botRight = BWAPI::TilePosition(u->getTilePosition().x +
+                                       u->getType().tileWidth(), 
+                                       u->getTilePosition().y +
+                                       u->getType().tileHeight());
       }
     }
 
     // iterate through mineral fields and vespene gas to expand first
     // no build zone
     for (auto &u : BWAPI::Broodwar->getNeutralUnits()) {
-      if ( (u->getType().isMineralField() || u->getType() == 
-        BWAPI::UnitTypes::Resource_Vespene_Geyser ) && u->isVisible()) {
-        topLeft = TileComparator::findTopLeft( topLeft, u->getTilePosition() );
-        botRight = TileComparator::findBotRight( botRight, u->getTilePosition(),
-          u->getType() );
+      if ((u->getType().isMineralField() || u->getType() ==
+           BWAPI::UnitTypes::Resource_Vespene_Geyser) && u->isVisible()) {
+        topLeft = TileComparator::findTopLeft(topLeft, u->getTilePosition());
+        botRight = TileComparator::findBotRight(botRight, u->getTilePosition(),
+                                                u->getType());
       }
     }
 
-    noBuildZones.push_back( std::make_pair( topLeft, botRight ) );
+    noBuildZones.push_back(std::make_pair(topLeft, botRight));
+  }
+
+  void initializeBuildZones(std::multimap<BWAPI::UnitType, int> dStructMap,
+                            std::list<int>& mapVariables,
+                            std::vector<std::pair<BWAPI::TilePosition,
+                            BWAPI::TilePosition>>&noBuildZones,
+                            std::vector<std::pair<BWAPI::TilePosition,
+                            BWAPI::TilePosition>>&buildZones) {
+    int mapOrientation = mapVariables.front();
+
+
   }
 
 }
