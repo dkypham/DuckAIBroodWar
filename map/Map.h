@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Common.h"
+#include "../unit/UnitIDMap.h"
 #include "TileComparator.h"
 
 namespace Map {
@@ -10,7 +11,7 @@ namespace Map {
                          BWAPI::TilePosition>>&noBuildZones,
                          std::vector<std::pair<BWAPI::TilePosition,
                          BWAPI::TilePosition>>&buildZones);
-  int findMineralSetup();
+  int findMineralSetup(std::multimap<BWAPI::UnitType, int> dStructMap);
   void initializeNoBuildZones(std::vector<std::pair<BWAPI::TilePosition,
                              BWAPI::TilePosition>>&noBuildZones);
   void initializeBuildZones(std::multimap<BWAPI::UnitType, int> dStructMap, 
